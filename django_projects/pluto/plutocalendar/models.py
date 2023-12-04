@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
-from datetime import date
+from datetime import datetime
 # Create your models here.
 
 
@@ -17,12 +17,12 @@ class CalendarAuthToken(models.Model):
     uuid = models.CharField(max_length = 100, unique=True)
     user_id = models.ForeignKey(CalendarUser, on_delete=models.CASCADE)
     last_login = models.DateTimeField(auto_now = True)
-    """
+    
     @property
     def is_expired(self):
-        Determines if the book is overdue based on due date and current date.
-        return bool(self.logi and date.today() > self.due_back)
-    """
+        NUMBER_OF_SECONDS = 86400 # seconds in 24 hours
+        return bool(datetime.today-self.last_login() > NUMBER_OF_SECONDS)
+    
 
 
 class CustomUser(AbstractUser):

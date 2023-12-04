@@ -69,10 +69,28 @@ def login_handler(request):
 def calendar(request):
     username = request.COOKIES.get("username") 
     auth_token = request.COOKIES.get("auth_token")
-    if username is None or auth_token is None:
+    if (is_logged_in(username, auth_token)) == False:
         return login_error(request, "Please log in :)", "") 
     
+    
     return render(request, 'plutocalendar/calendar.html')
+
+def is_logged_in(username, password):
+    if(username is None or password is None):
+        return False
+    user_query_set = CalendarUser.objects.filter(username__exact=username)
+    if(not user_query_set):
+        return False
+    user = user_query_set.get()
+    auth_token_query_set = CalendarAuthToken.objects.filter(user_id__exact=user.pk)
+    if(not auth_token_query_set):
+        return False
+    auth_token = auth_token_query_set.get()
+    if(auth_token.is_expired):
+        auth_token.delete()
+        return False
+    return True
+
 
 def get_or_create_auth_token(user):
     auth_token_query_set = CalendarAuthToken.objects.filter(user_id__exact=user.pk)

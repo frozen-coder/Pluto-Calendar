@@ -1,0 +1,17 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+<h1> Create New Account</h1>
+{% if error_message %}
+<p id = "error_text"> {{error_message}}
+{% endblock %}
+<form id="surveyForm" action="{% url 'create_user_handler'%}" method="post">
+    {% csrf_token %}
+    <label for="username">New Username:</label>
+  <input type="text" id="username" name="username" value = "{{username}}" ><br>
+  <label for="password">Password:</label>
+  <input type="text" id="password" name="password"><br>
+  <label for="password">Password:</label>
+  <input type="text" id="password_repeat" name="password_repeat"><br>
+    <input type="submit" value="Submit">
+  </form>
+{% endblock %}
