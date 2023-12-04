@@ -5,6 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse
 from uuid import uuid4
+from datetime import datetime
+
+
 # Create your views here.
 
 def index(request):
@@ -47,15 +50,20 @@ def login_handler(request):
     if username == None or username == "" or password == None or password == "":
         return login_error(request, "Username and/or password incorect", username)
     
-    users = CalendarUser.objects.filter(username__exact=username)
-    
-    print(users)
-    if not users:
+    user_query_set = CalendarUser.objects.filter(username__exact=username)
+    if not user_query_set:
         return login_error(request, "User not found", username)
     
+    user = user_query_set.get()
+    print(user)
+    if user.password != password:
+        return login_error(request, "Password incorect", username)
+    
+    auth_token = get_or_create_auth_token(user)
+
     response = redirect(reverse('calendar'))
     response.set_cookie("username", username)
-    response.set_cookie("auth_token", uuid4())
+    response.set_cookie("auth_token", auth_token)
     return response
 
 def calendar(request):
@@ -65,3 +73,18 @@ def calendar(request):
         return login_error(request, "Please log in :)", "") 
     
     return render(request, 'plutocalendar/calendar.html')
+
+def get_or_create_auth_token(user):
+    auth_token_query_set = CalendarAuthToken.objects.filter(user_id__exact=user.pk)
+    if auth_token_query_set:
+        #TODO: implement time limit in model or here
+        auth_token = auth_token_query_set.get()
+    else:
+        auth_token = CalendarAuthToken()
+        auth_token.user_id = user
+        auth_token.uuid = uuid4()
+    
+    auth_token.last_login = datetime.now()
+    auth_token.save()
+    return auth_token.uuid
+        
