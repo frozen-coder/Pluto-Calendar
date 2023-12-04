@@ -44,8 +44,14 @@ def login_handler(request):
     data = request.POST
     username = data.get("username")
     password = data.get("password")
-    if username == "" or password != "123":
-        return login_error(request, "Username and/or password incorrect", username)
+    if username == None or username == "" or password == None or password == "":
+        return login_error(request, "Username and/or password incorect", username)
+    
+    users = CalendarUser.objects.filter(username__exact=username)
+    
+    print(users)
+    if not users:
+        return login_error(request, "User not found", username)
     
     response = redirect(reverse('calendar'))
     response.set_cookie("username", username)
