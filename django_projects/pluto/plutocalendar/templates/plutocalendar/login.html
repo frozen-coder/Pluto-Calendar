@@ -1,0 +1,16 @@
+{% extends 'base_generic.html'%}
+{% block content%}
+<div class="container">
+    {% if  error_message %}
+    <p> {{error_message}}</p>
+    {% endif %}
+<form id="surveyForm" action="{% url 'login_handler'%}" method="post">
+    {% csrf_token %}
+    <label for="username">Username:</label>
+  <input type="text" id="username" name="username" value = "{{username}}" ><br>
+  <label for="password">Password:</label>
+  <input type="text" id="password" name="password"><br>
+    <input type="submit" value="Submit">
+  </form>
+  {% endblock %}
+</div>

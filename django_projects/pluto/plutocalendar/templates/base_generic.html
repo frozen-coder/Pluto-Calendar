@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    {% block title%}
+    <title>Pluto Scheduler</title>   
+    {% endblock %}
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        {% block logo%}
+        <div id="logo">
+            <img src="{% static 'Assets/PlutoLogo.png' %}" alt="Pluto Logo">
+            <h1 id = "title">Pluto Scheduler</h1>
+        </div>
+        {% endblock %}
+        {% block topNavBar %}
+        <div id="navBar">
+                <nav>
+                <ul>
+                    <li id = "Home"><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="{% url 'calendar' %}">Calendar</a></li>
+                    <li><a href="">Survey</a></li>
+                    <li><a href="">Contact</a></li>
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+        {% endblock%}
+    </header>
+    {% block content %}
+    {% endblock %}
+    
+</body>
+</html>

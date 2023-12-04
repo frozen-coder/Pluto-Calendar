@@ -1,0 +1,33 @@
+{% extends 'base_generic.html'%}
+    {% block content%}
+        <div class="calendar">
+            <div class="calendar-header">
+                <h2 id="currentMonth">January 2023</h2>
+                <div class="centered-button-container">
+                    <button id="prevMonth">&lt;</button>
+                    <button id="nextMonth">&gt;</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sun</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody">
+                    <!-- Calendar days will be populated here with JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+
+        {% load static %}
+        <script src="{% static 'Js-files/Calendar.js' %}"></script>
+    
+{%endblock%}

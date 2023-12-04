@@ -1,0 +1,67 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Second Page</title>
+    <link rel="stylesheet" type="text/css" href="../CSS/style.css"> <!-- Link to the shared CSS file -->
+</head>
+<body>
+    <header>
+        <div id="logo">
+            <img src="../Assets/PlutoLogo.png" alt="Pluto Logo">
+            <h1>Pluto Scheduler</h1>
+        </div>
+        <div id = "navBar">
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="Callender.html">Calendar</a></li>
+                <li><a href="Survey.html">Survey</a></li>
+                <li><a href="Contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+    </header>   
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Meaningful Survey</title>
+        <link rel="stylesheet" type="text/css" href="survey.css">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Meaningful Survey</h1>
+            <p>Your feedback is valuable to us. Please take a moment to complete our survey.</p>
+            <form id="surveyForm" action="https://your-formio-subdomain.form.io/your-form-name" method="POST">
+                <div class="question">
+                    <label for="name">1. What is your name?</label>
+                    <input type="text" id="name" name="data.name" required>
+                </div>
+                <div class="question">
+                    <label for="email">2. What is your email address?</label>
+                    <input type="email" id="email" name="data.email" required>
+                </div>
+                <div class="question">
+                    <label>3. How satisfied are you with our products/services?</label>
+                    <div class="radio-group">
+                        <input type="radio" id="satisfied" name="data.satisfaction" value="satisfied" required>
+                        <label for="satisfied">Satisfied</label>
+    
+                        <input type="radio" id="neutral" name="data.satisfaction" value="neutral">
+                        <label for="neutral">Neutral</label>
+    
+                        <input type="radio" id="unsatisfied" name="data.satisfaction" value="unsatisfied">
+                        <label for="unsatisfied">Unsatisfied</label>
+                    </div>
+                </div>
+                <div class="question">
+                    <label for="comments">4. Any additional comments or suggestions?</label>
+                    <textarea id="comments" name="data.comments" rows="4"></textarea>
+                </div>
+                <div class="submit-button">
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </body>
+    
+</html>
