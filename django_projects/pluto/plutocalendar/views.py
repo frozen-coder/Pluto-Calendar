@@ -66,6 +66,48 @@ def login_handler(request):
     response.set_cookie("auth_token", auth_token)
     return response
 
+def create_user_error(request, informationTuple):
+    context = {
+        "error_message" : informationTuple[0],
+        "username": informationTuple[1],
+        "password_one": informationTuple[2],
+        "password_two": informationTuple[3],
+    }
+    return render(request, 'plutocalendar/create_user.html', context = context)
+
+def create_user_handler(request):
+    if request.method != "POST":
+        informationTuple = ("Expected HTTP POST","","","")
+        return create_user_error(request, informationTuple)
+
+    data = request.POST
+    potential_username = data.get("username")
+    potential_password_one = data.get("password")
+    potential_password_two = data.get("password_repeat")
+
+    if(potential_username is None or potential_password_one is None or potential_password_two is None):
+        informationTuple = ("Please fill in the entire form", potential_username)
+        return create_user_error(request, informationTuple)
+    
+    if(CalendarUser.objects.filter(username__exact=potential_username)):
+        return create_user_error(request, ("Username already in use", potential_username))
+    if(potential_password_one != potential_password_two):
+        return create_user_error(request, ("Passwords do not match", potential_username))
+    user = CalendarUser()
+    
+    
+    
+
+
+
+
+    
+
+
+def create_user(request):
+    return render(request, "plutocalendar/create_user.html")
+
+
 def calendar(request):
     username = request.COOKIES.get("username") 
     auth_token = request.COOKIES.get("auth_token")
