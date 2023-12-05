@@ -33,6 +33,7 @@ def index(request):
 def login(request):
     return render(request, 'plutocalendar/login.html')
 
+
 def login_error(request, error_message, username):
     context = {
         "error_message" : error_message,
@@ -70,49 +71,51 @@ def create_user_error(request, informationTuple):
     context = {
         "error_message" : informationTuple[0],
         "username": informationTuple[1],
-        "password_one": informationTuple[2],
-        "password_two": informationTuple[3],
+        "email": informationTuple[2]
     }
     return render(request, 'plutocalendar/create_user.html', context = context)
 
 def create_user_handler(request):
     if request.method != "POST":
-        informationTuple = ("Expected HTTP POST","","","")
+        informationTuple = ("Expected HTTP POST","","")
         return create_user_error(request, informationTuple)
 
     data = request.POST
+    #TODO: Clean the data before making a new user
     potential_username = data.get("username")
     potential_password_one = data.get("password")
     potential_password_two = data.get("password_repeat")
-
-    if(potential_username is None or potential_password_one is None or potential_password_two is None):
-        informationTuple = ("Please fill in the entire form", potential_username)
+    email = data.get("email")
+    if(potential_username is None or potential_password_one is None or potential_password_two is None or email is None):
+        informationTuple = ("Please fill in the entire form", potential_username, email)
         return create_user_error(request, informationTuple)
     
     if(CalendarUser.objects.filter(username__exact=potential_username)):
-        return create_user_error(request, ("Username already in use", potential_username))
+        informationTuple = ("Username already in use", potential_username, email)
+        return create_user_error(request, informationTuple)
+    if(CalendarUser.objects.filter(email__exact=email)):
+        informationTuple = ("Email already in use", potential_username, email)
+        return create_user_error(request, informationTuple)
     if(potential_password_one != potential_password_two):
         return create_user_error(request, ("Passwords do not match", potential_username))
     user = CalendarUser()
-    
-    
-    
-
-
-
-
-    
-
+    user.email = email
+    user.username = potential_username
+    user.password = potential_password_one
+    user.save()
+    return redirect(reverse('create_user_confirmed'))
 
 def create_user(request):
     return render(request, "plutocalendar/create_user.html")
 
+def create_user_confirmed(request):
+    return render(request, "plutocalendar/create_user_confirmed.html" )
 
 def calendar(request):
     username = request.COOKIES.get("username") 
     auth_token = request.COOKIES.get("auth_token")
     if (is_logged_in(username, auth_token)) == False:
-        return login_error(request, "Please log in :)", "") 
+        return login_error(request, "Please log in :)", username) 
     
     
     return render(request, 'plutocalendar/calendar.html')
@@ -131,6 +134,7 @@ def is_logged_in(username, password):
     if(auth_token.is_expired):
         auth_token.delete()
         return False
+    auth_token.last_login = datetime.now()
     return True
 
 

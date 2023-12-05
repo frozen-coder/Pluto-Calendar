@@ -8,5 +8,5 @@ urlpatterns = [
     path('calendar/', views.calendar, name = 'calendar'),
     path('create_user/', views.create_user , name = 'create_user'),
     path('create_user_handler', views.create_user_handler, name = 'create_user_handler'),
-    
+    path('create_user_confirmed', views.create_user_confirmed, name = 'create_user_confirmed'),
 ]

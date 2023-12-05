@@ -9,7 +9,7 @@ from datetime import datetime
 
 class CalendarUser(models.Model):
     username = models.CharField(max_length=25, unique=True)
-    
+    email = models.EmailField(max_length=254, unique=True)
     #TODO: make sure to encrypt before launch
     password = models.CharField(max_length = 250)
 
