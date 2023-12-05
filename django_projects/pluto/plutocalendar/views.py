@@ -5,7 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse
 from uuid import uuid4
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+
+from time import mktime
 
 
 # Create your views here.
@@ -131,7 +133,7 @@ def is_logged_in(username, password):
     if(not auth_token_query_set):
         return False
     auth_token = auth_token_query_set.get()
-    if(auth_token.is_expired):
+    if(is_auth_token_expired(auth_token)):
         auth_token.delete()
         return False
     auth_token.last_login = datetime.now()
@@ -151,4 +153,9 @@ def get_or_create_auth_token(user):
     auth_token.last_login = datetime.now()
     auth_token.save()
     return auth_token.uuid
-        
+
+
+def is_auth_token_expired(authtoken):
+        NUMBER_OF_SECONDS = 86400 # seconds in 24 hours
+        curr_date = datetime.now(timezone.utc)
+        return bool(curr_date > (timedelta(seconds=NUMBER_OF_SECONDS) + authtoken.last_login))

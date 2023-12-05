@@ -3,7 +3,7 @@
 <h1> Create New Account</h1>
 {% if error_message %}
 <p id = "error_text"> {{error_message}}
-{% endblock %}
+{% endif %}
 <form id="surveyForm" action="{% url 'create_user_handler'%}" method="post">
     {% csrf_token %}
     <label for="username">New Username:</label>

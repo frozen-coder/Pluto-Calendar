@@ -9,7 +9,7 @@ from datetime import datetime
 
 class CalendarUser(models.Model):
     username = models.CharField(max_length=25, unique=True)
-    email = models.EmailField(max_length=254, unique=True)
+    email = models.EmailField(default = "placeholder@placeholder.com",max_length=254, unique=True)
     #TODO: make sure to encrypt before launch
     password = models.CharField(max_length = 250)
 
@@ -18,10 +18,7 @@ class CalendarAuthToken(models.Model):
     user_id = models.ForeignKey(CalendarUser, on_delete=models.CASCADE)
     last_login = models.DateTimeField(auto_now = True)
     
-    @property
-    def is_expired(self):
-        NUMBER_OF_SECONDS = 86400 # seconds in 24 hours
-        return bool(datetime.today-self.last_login() > NUMBER_OF_SECONDS)
+    
     
 
 
