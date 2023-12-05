@@ -50,6 +50,7 @@ def login_handler(request):
     data = request.POST
     username = data.get("username")
     password = data.get("password")
+    #TODO: clean data
     if username == None or username == "" or password == None or password == "":
         return login_error(request, "Username and/or password incorect", username)
     
@@ -114,16 +115,17 @@ def create_user_confirmed(request):
     return render(request, "plutocalendar/create_user_confirmed.html" )
 
 def calendar(request):
-    username = request.COOKIES.get("username") 
-    auth_token = request.COOKIES.get("auth_token")
-    if (is_logged_in(username, auth_token)) == False:
-        return login_error(request, "Please log in :)", username) 
+    
+    if (is_logged_in(request)) == False:
+        return login_error(request, "Please log in :)", request.COOKIES.get("username") ) 
     
     
     return render(request, 'plutocalendar/calendar.html')
 
-def is_logged_in(username, password):
-    if(username is None or password is None):
+def is_logged_in(request):
+    username = request.COOKIES.get("username") 
+    auth_token = request.COOKIES.get("auth_token")
+    if(username is None or auth_token is None):
         return False
     user_query_set = CalendarUser.objects.filter(username__exact=username)
     if(not user_query_set):
