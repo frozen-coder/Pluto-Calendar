@@ -1,0 +1,60 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Callendar</title>
+    <link rel="stylesheet" type="text/css" href="../CSS/style.css"><!-- Link to the shared CSS file -->
+</head>
+<body>
+    <header>
+        <div id="logo">
+            <a href="../index.html">
+                <img src="../Assets/PlutoLogo.png" width="90" height="70"></a>
+                <a href="../index.html">
+                <h1>Pluto Scheduler</h1></a>
+        </div>
+        <div id  = "navBar">
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="Callender.html">Calendar</a></li>
+                <li><a href="Survey.html">Survey</a></li>
+                <li><a href="Contact.html">Contact</a></li>
+                <li><a href = "LogIn.html" id = "LogIn">Log In</a></li>
+            </ul>
+        </nav>
+    </div>  
+    </header>
+    <body>
+        <div class="calendar">
+            <div class="calendar-header">
+                <h2 id="currentMonth">January 2023</h2>
+                <div class="centered-button-container">
+                    <button id="prevMonth">&lt;</button>
+                    <button id="nextMonth">&gt;</button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sun</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody">
+                    <!-- Calendar days will be populated here with JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+
+    
+        <script src="../Js-files/Callendar.js"></script>
+    </body>
+
+</body>
+</html>

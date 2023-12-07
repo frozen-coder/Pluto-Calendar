@@ -1,0 +1,280 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Set a background color and text color for the whole page */
+
+/* Header Styles */
+header {
+    background: linear-gradient(to bottom, #023E8A, #0077B6);
+    color: #fff;        
+    padding: 10px;
+    width: 100%;
+    justify-content: space-between;
+    height: 90px;
+    display:flex;
+    margin-right: 10px;
+    padding: 10px;
+}
+
+#logo{
+    display:flex;
+    
+}
+
+img {
+    margin-right: 10px;
+}
+
+#title {
+    display: flex;
+    color:#DCD5B9;
+    margin-top:10px;
+    
+}
+
+/* Navigation Menu Styles */
+#navBar {
+    display: flex;
+    
+}
+nav ul {
+    list-style: none;
+    margin-top: 10px;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 10px;
+    
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+
+#Home:hover {
+    transform:scale(1.2);
+}
+
+ main, body, #home {
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    background: linear-gradient(to bottom, #0077B6, #90E0EF);
+    border: 1px solid linear-gradient(to bottom, #0077B6, #8b9da9)
+
+}
+html {
+    background: linear-gradient(to bottom, #90E0EF, #90E0EF);;
+}
+
+
+
+/*main contenct styles*/
+#home {
+    text-align: center;
+    padding: 60px 0; /* Increase the top and bottom padding for more space */
+    background: linear-gradient(to bottom, #0077B6, #90E0EF); /* Apply a subtle gradient background */
+}
+
+#home h2 {
+    font-size: 36px; /* Increase the font size for a bigger title */
+    color: #04046b;
+    margin-bottom: 20px;
+}
+
+#home p {
+    font-size: 18px; /* Increase the font size for better readability */
+    color: #04046b;
+    margin-bottom: 40px; /* Increase the margin for spacing */
+}
+
+.cta-button {
+    display: inline-block;
+    text-align: center;
+    padding: 15px 30px; /* Increase the button size for emphasis */
+    background-color: #2dbbd7;
+    color: #04046b;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    font-size: 20px; /* Increase the font size of the button text */
+    margin-top: 20px; /* Add some margin space between the paragraph and the button */
+}
+
+.cta-button:hover {
+    background-color: #ffebeb;
+}
+
+
+
+/* callender styles */
+h2{
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+table {
+    width: 100%;
+    max-width: 90%; /* Adjust the width as needed */
+    
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #CAF0F8;
+}
+
+caption {
+    font-size: 24px;
+    font-weight: bold;
+    padding: 10px;
+    color:#dbdfe2
+}
+thead th {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 10px;
+}
+
+
+#currentMonth {
+    color:#023E8A
+}
+
+#prevMonth,
+#nextMonth {
+    background-color: #333;
+    color: #CAF0F8;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    margin:10px;    
+}
+
+#prevMonth:hover,
+#nextMonth:hover {
+    background-color: #555;
+}
+
+.centered-button-container {
+    display: flex;
+    justify-content: center;
+    padding:10px;
+}
+
+
+/* Survey page styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #CAF0F8;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 80%;
+    margin: 0 auto;
+    background-color: #CAF0F8;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(9, 8, 94, 0.1);
+    border-radius: 5px;
+    margin-top:10px;
+    margin-bottom:20px;
+}
+
+h1 {
+    color: #333;
+}
+
+p {
+    color: #666;
+}
+
+.question {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    background-color: #bde8ff;
+}
+
+.radio-group {
+    display:flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+button {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2185d0;
+    
+}
+
+#efficiencyRank {
+    background-color: #bde8ff;
+}
+/* login styles */
+
+#or {
+    display:flex; 
+    padding: 10px;
+    margin:10px;
+}
+
+#SignUp {
+    background-color: #3498db;
+    color: #fff;
+    padding:10px;   
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin:5px;
+    text-decoration: none;
+}
+
+/* Sign up confirm styles*/
+
+button a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+a{
+    text-decoration: none;
+}

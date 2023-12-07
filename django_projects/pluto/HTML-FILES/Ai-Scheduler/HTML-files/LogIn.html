@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="/Ai-Scheduler/CSS/style.css">
+</head>
+<header>
+    <div id="logo">
+        <a href="../index.html">
+            <img src="../Assets/PlutoLogo.png" width="90" height="70"></a>
+            <a href="../index.html">
+            <h1>Pluto Scheduler</h1></a>
+    </div>
+    <div id  = "navBar">
+    <nav>
+        <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="Callender.html">Calendar</a></li>
+            <li><a href="Survey.html">Survey</a></li>
+            <li><a href="Contact.html">Contact</a></li>
+            <li><a href = "LogIn.html" id = "LogIn">Log In</a></li>
+        </ul>
+    </nav>
+</div>  
+</header>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form onsubmit="login(); return false;">
+            <label for="username">Username:</label>
+            <input type="text" id="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" required>
+            <button type="submit">Login</button>
+            <p id = "or">Or</p>
+            <a href = "SignUp.html" id = "SignUp">Sign Up</a>
+        </form>
+    </div>
+    <script src="/Ai-Scheduler/Js-files/auth.js"></script>
+</body>
+</html>
