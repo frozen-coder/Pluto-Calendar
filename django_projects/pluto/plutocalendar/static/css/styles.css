@@ -246,4 +246,35 @@ button:hover {
     
 }
 
+#efficiencyRank {
+    background-color: #bde8ff;
+}
+/* login styles */
 
+#or {
+    display:flex; 
+    padding: 10px;
+    margin:10px;
+}
+
+#SignUp {
+    background-color: #3498db;
+    color: #fff;
+    padding:10px;   
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin:5px;
+    text-decoration: none;
+}
+
+/* Sign up confirm styles*/
+
+button a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+a{
+    text-decoration: none;
+}

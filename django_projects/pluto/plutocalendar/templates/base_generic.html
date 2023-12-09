@@ -20,17 +20,20 @@
         {% endblock %}
         {% block topNavBar %}
         <div id="navBar">
-                <nav>
-                <ul>
-                    <li id = "Home"><a href="{% url 'index' %}">Home</a></li>
-                    <li><a href="{% url 'create_user' %}"> Create Account</a></li>
-                    <li><a href="{% url 'calendar' %}">Calendar</a></li>
-                    <li><a href="">Survey</a></li>
-                    <li><a href="">Contact</a></li>
-                    <li><a href="{% url 'login' %}">Login</a></li>
-                </ul>
-            </nav>
-        </div>
+            <nav>
+            <ul>
+                <li id = "Home"><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="{% url 'calendar' %}">Calendar</a></li>
+                <li><a href="">Survey</a></li>
+                <li><a href="">Contact</a></li>
+                {% if username %}
+                <li><a href = "{% url 'logout' %}" id = "LogOut">Log In</a></li>
+                {% else %}
+                <li><a href = "{% url 'login' %}" id = "LogIn">Log In</a></li>
+                {%endif%}
+            </ul>
+        </nav>
+    
         {% endblock%}
     </header>
     {% block content %}

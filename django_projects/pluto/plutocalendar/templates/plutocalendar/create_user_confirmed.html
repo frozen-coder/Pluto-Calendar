@@ -1,4 +1,10 @@
 {% extends 'base_generic.html'%}
 {% block content %}
-<p> congrats, you have made an account :)</p>
+<main>
+    <section id="home">
+        <h2>Congrats! You are now signed up!</h2>
+        <p>Stay organized and manage your tasks and events with ease. Get started now!</p>
+        <a href="{% url 'login'%}" class="cta-button"> Log In</a>
+    </section>
+</main>
 {% endblock %}
