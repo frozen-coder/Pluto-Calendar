@@ -19,7 +19,7 @@ class CalendarAuthToken(models.Model):
     last_login = models.DateTimeField(auto_now = True)
     
     
-    
+
 
 
 class CustomUser(AbstractUser):
@@ -30,6 +30,8 @@ class CalendarEvent(models.Model):
     date
     summary 
     """
-    summary = models.CharField(max_length=250, help_text='Summary of event')
-    date = models.DateField(auto_now=False, auto_now_add=False)
+    title = models.CharField(max_length=35, help_text='Title of event')
+    summary = models.CharField(max_length=250, help_text='Summary of event', blank=True)
+    start_date = models.DateTimeField(auto_now=False, auto_now_add=False)
+    end_date = models.DateTimeField(auto_now=False, auto_now_add=False)
     user_id = models.ForeignKey(CalendarUser, on_delete=models.CASCADE)

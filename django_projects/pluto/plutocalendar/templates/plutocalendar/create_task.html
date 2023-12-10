@@ -1,0 +1,26 @@
+{% extends 'base_generic.html' %}
+{%block content%}
+<body>
+    <div class="container">
+      
+        <h2>Create Task</h2>
+        
+        {% if error_message %}
+        <p id = "error_text"> {{error_message}}
+      {% endif %}
+  <form id="surveyForm" action="{% url 'create_task_handler'%}" method="post">
+      {% csrf_token %}
+      <label for="start_date">Start Date:</label>
+    <input type="datetime-local" id="start-date" name="start_date" value = "" 
+    required><br>
+    <label for="end_date">End Date:</label>
+    <input type="datetime-local" id="end-date" name="end_date" value = "" required><br>
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" required minlength="1" maxlength="35" size="35" ><br>
+    <label for="title">Summary(optional):</label>
+    <input type="text" id="summary" name="summary" minlength="1" maxlength="250" size="250"><br>
+    <button id = "signUpButton" type="submit">Submit</button>
+    </form>
+  </div>
+  </body>
+{%endblock%}
