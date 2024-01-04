@@ -1,0 +1,22 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+<body>
+  <div class="container">
+    {% if error_message %}
+      <p id = "error_text"> {{error_message}}
+    {% endif %}
+      <h2>Delete your account</h2>
+      
+
+<form id="surveyForm" action="{% url 'delete_user_handler'%}" method="post">
+    {% csrf_token %}
+    
+  <label for="password">Password:</label>
+  <input type="text" id="password" name="password"><br>
+  <label for="password">Repeat Password:</label>
+  <input type="text" id="password_repeat" name="password_repeat"><br>
+  <button id = "signUpButton" type="submit">Delete</button>
+  </form>
+</div>
+</body>
+{% endblock %}

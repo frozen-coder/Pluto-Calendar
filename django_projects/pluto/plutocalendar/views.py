@@ -125,7 +125,52 @@ def create_user(request):
 def create_user_confirmed(request):
     context = {}
     context = add_user_to_context(request, context)
-    return render(request, "plutocalendar/create_user_confirmed.html",context)
+    return render(request, "plutocalendar/create_user_confirmed.html",context=context)
+
+def delete_user_error(request, informationTuple):
+    context = {
+        "error_message" : informationTuple[0],
+        "username": request.COOKIES.get("username"),
+    }
+    context = add_user_to_context(request, context)
+    return render(request, 'plutocalendar/create_user.html', context = context)
+
+def delete_user_handler(request):
+    if (is_logged_in(request)) == False:
+        return login_error(request, "Please log in :)", request.COOKIES.get("username") ) 
+    if request.method != "POST":
+        informationTuple = ("Expected HTTP POST","","")
+        return create_user_error(request, informationTuple)
+
+    data = request.POST
+    #TODO: Clean the data before deleting user and also encrypt passwords
+    password_one = data.get("password")
+    password_two = data.get("password_repeat")
+   
+    if(password_one is None or password_two is None):
+        informationTuple = ("Passwords Must Match")
+        return create_user_error(request, informationTuple)
+    
+     
+    if(password_one != password_two):
+        return create_user_error(request, ("Passwords do not match"))
+    user = CalendarUser.objects.filter(username__exact=request.COOKIES.get("username")).get()
+    if(user.password != password_one):
+        informationTuple = ("Password is incorrect")
+        return create_user_error(request, informationTuple)
+    user.delete()
+    return delete_user_confirmed(request)
+
+def delete_user(request):
+    context = {}
+    context = add_user_to_context(request, context)
+    return render(request, "plutocalendar/delete_user.html", context=context)
+
+def delete_user_confirmed(request):
+    context = {}
+    context = add_user_to_context(request, context)
+    return render(request, "plutocalendar/delete_user_confirmed.html",context=context)
+
 
 def calendar(request):
     
