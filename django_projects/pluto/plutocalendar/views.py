@@ -6,7 +6,7 @@ from uuid import uuid4
 from datetime import datetime, timedelta, timezone
 from django.contrib.auth import logout
 from time import mktime
-
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -204,22 +204,43 @@ def is_logged_in(request):
     update_auth_token(auth_token)
     return True
 
-def create_task(request):
-    if (is_logged_in(request)) == False:
-        return login_error(request, "Please log in :)", request.COOKIES.get("username") ) 
-    context = {}
-    context = add_user_to_context(request, context)
-    return render(request, "plutocalendar/create_task.html", context=context)
-
-def create_task_error(request, information_tuple):
-    #TODO: implement this plz
-    return redirect(create_task(request))
-
 def create_task_handler(request):
     if request.method != "POST":
-        informationTuple = ("Expected HTTP POST","","","")
-        return create_user_error(request, informationTuple)
+        #Expected HTTP POST
+        return JsonResponse({"success", "false"})
+    data = request.POST
+    date = data.get("date")
+    title = data.get("title")
+    start_time = data.get("eventTimeFrom")
+    end_time = data.get("eventTimeTo")
+    event = CalendarEvent()
+    if(date == None or start_time == None or end_time == None or title == None):
+        return JsonResponse({"success", "false"})
+    start_time_array = start_time.split(":")
+    start_time_hour = int(start_time_array[0])
+    if(start_time_array[1].split(" ")[1] == "PM"):
+        start_time_hour  = start_time_hour + 12
+    start_time_minute = int(start_time_array[1].split(" ")[0])
+    
+    end_time_array = end_time.split(":")
+    end_time_hour = int(end_time_array[0])
+    if(end_time_array[1].split(" ")[1] == "PM"):
+        end_time_hour  = end_time_hour + 12
 
+    end_time_minute = int(end_time_array[1].split(" ")[0])
+    #creating an instance of  
+    # datetime.time 
+    # time(hour = 0, minute = 0, second = 0) 
+    event.start_time = datetime.time(start_time_hour, start_time_minute) 
+    event.end_time = datetime.time(end_time_hour, end_time_minute) 
+    date_array = date.split("-")
+
+    #%Y-%m-%d',             # '2006-10-25'
+    event.date= datetime.datetime(int(date_array[0]), int(date_array[1]), int(date_array[2]))
+    event.save()
+    return JsonResponse({"success", "true"})
+  
+    
 def get_or_create_auth_token(user):
     auth_token_query_set = CalendarAuthToken.objects.filter(user_id__exact=user.pk)
     if auth_token_query_set:

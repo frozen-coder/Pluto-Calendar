@@ -31,7 +31,8 @@ class CalendarEvent(models.Model):
     summary 
     """
     title = models.CharField(max_length=35, help_text='Title of event')
-    summary = models.CharField(max_length=250, help_text='Summary of event', blank=True)
-    start_date = models.DateTimeField(auto_now=False, auto_now_add=False)
-    end_date = models.DateTimeField(auto_now=False, auto_now_add=False)
+    
+    date = models.DateTimeField(auto_now=False, auto_now_add=False)
+    start_time = models.TimeField(auto_now=False, auto_now_add=False)
+    end_time = models.TimeField(auto_now=False, auto_now_add=False)
     user_id = models.ForeignKey(CalendarUser, on_delete=models.CASCADE)
