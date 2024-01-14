@@ -3,11 +3,11 @@ from .models import CalendarUser, CalendarEvent, CalendarAuthToken
 from django.shortcuts import redirect
 from django.urls import reverse
 from uuid import uuid4
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, time, date
 from django.contrib.auth import logout
 from time import mktime
 from django.http import JsonResponse
-
+import json
 # Create your views here.
 
 def index(request):
@@ -203,42 +203,103 @@ def is_logged_in(request):
 
     update_auth_token(auth_token)
     return True
+def create_task_test(request):
 
+    if (is_logged_in(request)) == False:
+        return login_error(request, "Please log in :)", request.COOKIES.get("username") ) 
+    context = {}
+    context = add_user_to_context(request, context)
+    return render(request, 'plutocalendar/create_task.html', context = context)
+def delete_task_test(request):
+    if (is_logged_in(request)) == False:
+        return login_error(request, "Please log in :)", request.COOKIES.get("username") ) 
+    context = {}
+    context = add_user_to_context(request, context)
+    return render(request, 'plutocalendar/delete_task.html', context = context)
 def create_task_handler(request):
     if request.method != "POST":
         #Expected HTTP POST
-        return JsonResponse({"success", "false"})
+        print("I WANA HTTP POST >:(")
+        return JsonResponse(json.dumps(list({"success", "false"})),safe=False)
+    if not is_logged_in(request):
+        
+        return JsonResponse(json.dumps(list({"success", "false"})),safe=False)
     data = request.POST
-    date = data.get("date")
+    dateIn = data.get("date")
+    print("date = " + dateIn)
     title = data.get("title")
+    print("title = " + title)
     start_time = data.get("eventTimeFrom")
+    print("start time = " + start_time)
     end_time = data.get("eventTimeTo")
+    print("end time = " + end_time)
     event = CalendarEvent()
-    if(date == None or start_time == None or end_time == None or title == None):
-        return JsonResponse({"success", "false"})
+    if(dateIn == None or start_time == None or end_time == None or title == None):
+        return JsonResponse(json.dumps(list({"success", "false"})),safe=False)
     start_time_array = start_time.split(":")
     start_time_hour = int(start_time_array[0])
-    if(start_time_array[1].split(" ")[1] == "PM"):
-        start_time_hour  = start_time_hour + 12
-    start_time_minute = int(start_time_array[1].split(" ")[0])
+    start_time_minute = int(start_time_array[1])
     
     end_time_array = end_time.split(":")
     end_time_hour = int(end_time_array[0])
-    if(end_time_array[1].split(" ")[1] == "PM"):
-        end_time_hour  = end_time_hour + 12
-
-    end_time_minute = int(end_time_array[1].split(" ")[0])
+    end_time_minute = int(end_time_array[1])
     #creating an instance of  
     # datetime.time 
     # time(hour = 0, minute = 0, second = 0) 
-    event.start_time = datetime.time(start_time_hour, start_time_minute) 
-    event.end_time = datetime.time(end_time_hour, end_time_minute) 
-    date_array = date.split("-")
-
+    event.start_time = time(start_time_hour, start_time_minute) 
+    event.end_time = time(end_time_hour, end_time_minute) 
+    dateIn_array = dateIn.split("-")
+    event.title = title
     #%Y-%m-%d',             # '2006-10-25'
-    event.date= datetime.datetime(int(date_array[0]), int(date_array[1]), int(date_array[2]))
+    print(dateIn_array[0] + " " + dateIn_array[1] + " " + dateIn_array[2])
+    event.date= date(int(dateIn_array[0]), int(dateIn_array[1]), int(dateIn_array[2]))
+    event.user = CalendarUser.objects.filter(username__exact=request.COOKIES.get("username")).get()
     event.save()
-    return JsonResponse({"success", "true"})
+
+    return JsonResponse(json.dumps(list({"success", "true"})), safe = False)
+def delete_task_handler(request):
+    if request.method != "POST":
+        #Expected HTTP POST
+        print("I WANA HTTP POST >:(")
+        return JsonResponse(json.dumps(list({"success", "false"})),safe=False)
+    if not is_logged_in(request):
+        
+        return JsonResponse(json.dumps(list({"success", "false"})),safe=False)
+    data = request.POST
+    data = request.POST
+    dateIn = data.get("date")
+    print("date of task to delete = " + dateIn)
+    title = data.get("title")
+    print("title of task to delete = " + title)
+    start_time = data.get("eventTimeFrom")
+    print("start time of task to delete = " + start_time)
+    end_time = data.get("eventTimeTo")
+    print("end time of task to delete = " + end_time)
+    if(dateIn == None or start_time == None or end_time == None or title == None):
+        return JsonResponse(json.dumps(list({"success", "false"})),safe=False)
+    start_time_array = start_time.split(":")
+    start_time_hour = int(start_time_array[0])
+    start_time_minute = int(start_time_array[1])
+    
+    end_time_array = end_time.split(":")
+    end_time_hour = int(end_time_array[0])
+    end_time_minute = int(end_time_array[1])
+    #creating an instance of  
+    # datetime.time 
+    # time(hour = 0, minute = 0, second = 0) 
+    #TODO:clean te data
+    dateIn_array = dateIn.split("-")
+    dateIn_processed = date(int(dateIn_array[0]), int(dateIn_array[1]), int(dateIn_array[2]))
+    start_time_processed = time(start_time_hour, start_time_minute) 
+    end_time_processed = time(end_time_hour, end_time_minute) 
+    user = CalendarUser.objects.filter(username__exact=request.COOKIES.get("username")).get()
+    events = list(CalendarEvent.objects.filter(user__exact=user).filter(date__exact=dateIn_processed).filter(start_time__exact=start_time_processed).filter(end_time__exact=end_time_processed).filter(title__exact=title))
+    print(events)
+    if(len(events) == 0):
+        return JsonResponse(json.dumps(list({"success", "false"})), safe = False)
+    cur_event = events[0]
+    cur_event.delete()
+    return JsonResponse(json.dumps(list({"success", "true"})), safe = False)
   
     
 def get_or_create_auth_token(user):

@@ -32,7 +32,7 @@ class CalendarEvent(models.Model):
     """
     title = models.CharField(max_length=35, help_text='Title of event')
     
-    date = models.DateTimeField(auto_now=False, auto_now_add=False)
+    date = models.DateField(auto_now=False, auto_now_add=False)
     start_time = models.TimeField(auto_now=False, auto_now_add=False)
     end_time = models.TimeField(auto_now=False, auto_now_add=False)
-    user_id = models.ForeignKey(CalendarUser, on_delete=models.CASCADE)
+    user= models.ForeignKey(CalendarUser, on_delete=models.CASCADE)
