@@ -1,0 +1,22 @@
+{% extends 'base_generic.html' %}
+{%block content%}
+<body>
+    <div class="container">
+      
+        <h2>GetTasks</h2>
+        
+        {% if error_message %}
+        <p id = "error_text"> {{error_message}}
+      {% endif %}
+  <form id="surveyForm" action="{% url 'get_tasks_date_range'%}" method="post">
+      {% csrf_token %}
+      
+    <label for="eventDateFrom">Start Date:</label>
+    <input type="date" id="eventTimeFrom" name="eventDateFrom" value = "" required><br>
+    <label for="eventTimeTo">End Date:</label>
+    <input type="date" id="eventTimeTo" name="eventDateTo" value = "" required><br>
+    <button id = "signUpButton" type="submit">Submit</button>
+    </form>
+  </div>
+  </body>
+{%endblock%}
