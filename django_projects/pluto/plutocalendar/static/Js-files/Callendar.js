@@ -45,7 +45,23 @@ function initCalendar() {
   const lastDate = lastDay.getDate();
   const day = firstDay.getDay();
   const nextDays = 7 - lastDay.getDay() - 1;
-
+  var url = window.location.hostname+":"+location.port+"/plutocalendar/get_tasks_date_range";
+  alert("Yo, the url u are trying to use for initCalendar is " + url);
+  fetch(url,
+   {   method: 'POST',  
+    headers: {      "Content-type": "application/json; charset=UTF-8",    
+     // Add any other headers if needed  
+    }, 
+      body: JSON.stringify(
+        {
+        'startDate': firstDay,
+        'endDate': lastDay }
+        ), 
+      }
+    )  
+     .then(response => response.json())   
+     .then((json) => alert(data))   
+     .catch(error => console.error('Error posting data:', error));
   //Update date on the top of the callendar
   date.innerHTML = months[month] + " " + year;
 

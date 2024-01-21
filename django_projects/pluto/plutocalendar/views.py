@@ -173,7 +173,7 @@ def delete_user_confirmed(request):
 
 
 def calendar(request):
-    
+    print("calendar loaded")
     if (is_logged_in(request)) == False:
         return login_error(request, "Please log in :)", request.COOKIES.get("username") ) 
     context = {}
@@ -308,18 +308,20 @@ def delete_task_handler(request):
     return JsonResponse({"success":"true"})
 
 def get_tasks_date_range(request):
+    print("I got the get_tasks_date_range thing")
     if request.method != "POST":
         #Expected HTTP POST
         print("I WANA HTTP POST >:(")
-        return JsonResponse(json.dumps(list({"success", "false"})),safe=False)
+        return JsonResponse({"success":"true"})
     if not is_logged_in(request):
         print("U need to be logged in")
-        return JsonResponse(json.dumps(list({"success", "false"})),safe=False)
+        return JsonResponse({"success":"true"})
     data = request.POST
-    start_date_in = data.get("eventDateFrom")
+    start_date_in = data.get("startDate")
+    #yyyy-mm-dd
     start_date_in_array = start_date_in.split("-")
     start_date = date(int(start_date_in_array [0]), int(start_date_in_array [1]), int(start_date_in_array [2]))
-    end_date_in = data.get("eventDateTo")
+    end_date_in = data.get("endDate")
     end_date_in_array = end_date_in.split("-")
     end_date = date(int(end_date_in_array [0]), int(end_date_in_array [1]), int(end_date_in_array [2]))
     if(start_date == None or end_date == None):
