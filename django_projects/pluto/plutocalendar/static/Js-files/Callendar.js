@@ -35,32 +35,101 @@ let eventsArr = [];
 
 getEvents();
 // Function to add days
+function toYearMonthDayFormat(dateObject){
+  //alert(dateObject.getFullYear() + "-" + (dateObject.getMonth()+1) + "-0"+dateObject.getDay());
+  
+  if(dateObject.getDay() < 10) {
+    return dateObject.getFullYear() + "-" + (dateObject.getMonth()+1) + "-0"+dateObject.getDate();
+  }
+  return dateObject.getFullYear() + "-"+(dateObject.getMonth()+1)+"-"+dateObject.getDate();
+}
+function addEvent(eventObject) {
+  //alert(eventObject);
+  const timeFrom = converTime(eventObject.eventTimeFrom);
+  const timeTo = converTime(eventObject.eventTimeTo);
+  const eventTitle = eventObject.title;
+  let eventDate = eventObject.date;
+  let eventDateArray = eventDate.split("-");
+  let eventDay = eventDateArray[2];
+  let eventMonth = eventDateArray[1];
+  let eventYear = eventDateArray[0];
+  const newEvent = {
+    title: eventTitle,
+    time : timeFrom + " - " + timeTo,
+  };
+  let eventAdded = false;
+  if(eventsArr.length > 0) {
+    // cehck if current day hasalready any event then add to that
+    eventsArr.forEach((item) =>  {
+      if(
+        item.day == eventDay &&
+        item.month == eventMonth &&
+        item.year == eventYear
+      ) {
+        item.events.push(newEvent);
+        eventAdded = true;
+      }
+    })
+  }
 
+  //if event array empty or current day has not event create new
+  if(!eventAdded) {
+    eventsArr.push ({
+      day: eventDay,
+      month: eventMonth,
+      year: eventYear,
+      events: [newEvent],
+    });
+  }
+  updateEvents(eventDay);
+
+  // also add event class to newly added day if not already 
+  //TODO: Fix the weird bug where events on the current day appear when they shoulden't
+  const activeDayElem = document.querySelector(".day.active");
+  if(!activeDayElem.classList.contains("event")) {
+    activeDayElem.classList.add("event")
+  }
+  
+
+}
 function initCalendar() {
   // to get prev month days an current month all days and rem next month days
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
+  //console.log(month);
+  //console.log(month+1);
   const prevLastDay = new Date(year, month, 0);
   const prevDays = prevLastDay.getDate();
   const lastDate = lastDay.getDate();
   const day = firstDay.getDay();
   const nextDays = 7 - lastDay.getDay() - 1;
-  var url = window.location.hostname+":"+location.port+"/plutocalendar/get_tasks_date_range";
-  alert("Yo, the url u are trying to use for initCalendar is " + url);
+  var url = "http://"+window.location.hostname+":"+location.port+"/plutocalendar/get_tasks_date_range";
+  //alert("Yo, the url u are trying to use for initCalendar is " + url);
+  let formData = new FormData();
+  formData.append('startDate', toYearMonthDayFormat(firstDay));
+  
+  formData.append('endDate', toYearMonthDayFormat(lastDay));
+  responseDate = "";
+  //console.log(firstDay.);
+  //console.log(lastDay);
   fetch(url,
    {   method: 'POST',  
-    headers: {      "Content-type": "application/json; charset=UTF-8",    
-     // Add any other headers if needed  
-    }, 
-      body: JSON.stringify(
-        {
-        'startDate': firstDay,
-        'endDate': lastDay }
-        ), 
+   
+      body: formData, 
       }
     )  
-     .then(response => response.json())   
-     .then((json) => alert(data))   
+     .then(function(res){return res.json();})
+     .then(function(data){
+      //alert(JSON.stringify(data));
+      dataProccessed = JSON.parse(JSON.stringify(data));
+      //alert("Data proccessed = " + dataProccessed);
+      //alert("First obj = " + dataProccessed[0]);
+      for(let i = 0; i < dataProccessed.length; i++) {
+        //alert("Event added");
+        //alert("Object is " + dataProccessed[i]);
+        addEvent( dataProccessed[i]);
+      }
+    })   
      .catch(error => console.error('Error posting data:', error));
   //Update date on the top of the callendar
   date.innerHTML = months[month] + " " + year;
@@ -371,7 +440,32 @@ addEventSubmit.addEventListener("click", ()=> {
   const eventTitle = addEventTitle.value;
   const eventTimeFrom = addEventFrom.value;
   const eventTimeTo =  addEventTo.value;
-
+  var url = "http://"+window.location.hostname+":"+location.port+"/plutocalendar/get_tasks_date_range";
+  let formData = new FormData();
+  formData.append('startDate', toYearMonthDayFormat(firstDay));  
+  formData.append('endDate', toYearMonthDayFormat(lastDay));
+  responseDate = "";
+  //console.log(firstDay.);
+  //console.log(lastDay);
+  fetch(url,
+   {   method: 'POST',  
+   
+      body: formData, 
+      }
+    )  
+     .then(function(res){return res.json();})
+     .then(function(data){
+      //alert(JSON.stringify(data));
+      dataProccessed = JSON.parse(JSON.stringify(data));
+      //alert("Data proccessed = " + dataProccessed);
+      //alert("First obj = " + dataProccessed[0]);
+      for(let i = 0; i < dataProccessed.length; i++) {
+        //alert("Event added");
+        //alert("Object is " + dataProccessed[i]);
+        addEvent( dataProccessed[i]);
+      }
+    })   
+     .catch(error => console.error('Error posting data:', error));
   // some validations
   if(eventTitle == "" || eventTimeFrom == "" || eventTimeTo == "") {
     alert("Please fill all the fields");

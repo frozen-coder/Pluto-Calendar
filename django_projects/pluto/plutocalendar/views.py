@@ -7,6 +7,7 @@ from datetime import datetime, timedelta, timezone, time, date
 from django.contrib.auth import logout
 from time import mktime
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 import json
 # Create your views here.
 
@@ -226,10 +227,10 @@ def create_task_handler(request):
     if request.method != "POST":
         #Expected HTTP POST
         print("I WANA HTTP POST >:(")
-        return JsonResponse(json.dumps(list({"success", "false"})),safe=False)
+        return JsonResponse({"success":"false"})
     if not is_logged_in(request):
         
-        return JsonResponse(json.dumps(list({"success", "false"})),safe=False)
+        return JsonResponse({"success":"false"})
     data = request.POST
     dateIn = data.get("date")
     print("date = " + dateIn)
@@ -241,7 +242,7 @@ def create_task_handler(request):
     print("end time = " + end_time)
     event = CalendarEvent()
     if(dateIn == None or start_time == None or end_time == None or title == None):
-        return JsonResponse(json.dumps(list({"success", "false"})),safe=False)
+        return JsonResponse({"success":"false"})
     start_time_array = start_time.split(":")
     start_time_hour = int(start_time_array[0])
     start_time_minute = int(start_time_array[1])
@@ -306,7 +307,7 @@ def delete_task_handler(request):
     cur_event = events[0]
     cur_event.delete()
     return JsonResponse({"success":"true"})
-
+@csrf_exempt
 def get_tasks_date_range(request):
     print("I got the get_tasks_date_range thing")
     if request.method != "POST":
@@ -318,6 +319,7 @@ def get_tasks_date_range(request):
         return JsonResponse({"success":"true"})
     data = request.POST
     start_date_in = data.get("startDate")
+    print(start_date_in)
     #yyyy-mm-dd
     start_date_in_array = start_date_in.split("-")
     start_date = date(int(start_date_in_array [0]), int(start_date_in_array [1]), int(start_date_in_array [2]))
@@ -329,8 +331,14 @@ def get_tasks_date_range(request):
     user =CalendarUser.objects.filter(username__exact=request.COOKIES.get("username")).get()
     events_list = CalendarEvent.objects.filter(user__exact = user)
     event_return_list = []
+    #print("Start date in: " + start_date_in)
+    #print("End date in: " + end_date_in)
+    #print("Start date: " + str(start_date))
+    #print("End Date: " +str(end_date))
     for e in events_list:
+        #print(e)
         current_date = e.date
+        print("Current date: "+str(current_date))
         if(current_date>=start_date and current_date <=end_date):
             event_return_list.append(
                 {
@@ -340,6 +348,9 @@ def get_tasks_date_range(request):
                     "eventTimeTo":e.end_time,
                 }
             )
+    print(len(event_return_list))
+    print(event_return_list)
+    print(JsonResponse(event_return_list, safe = False))
     return JsonResponse(event_return_list, safe = False)
 
 
