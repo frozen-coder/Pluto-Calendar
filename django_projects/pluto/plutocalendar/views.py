@@ -15,9 +15,9 @@ def index(request):
     """View function for homepage of site."""
     context = {}
     context = add_user_to_context(request, context)
-    print(request.COOKIES.get("auth_token"))
-    print(is_logged_in(request))
-    print(context)
+    #print(request.COOKIES.get("auth_token"))
+    #print(is_logged_in(request))
+    #print(context)
     return render(request, 'index.html', context = context) 
 
 def login(request):
@@ -45,8 +45,8 @@ def login_handler(request):
     data = request.POST
     username = data.get("username")
     password = data.get("password")
-    print(username)
-    print(password)
+    #print(username)
+    #print(password)
     #TODO: clean data
     if username == None or username == "" or password == None or password == "":
         return login_error(request, "Username and/or password incorect", username)
@@ -174,7 +174,7 @@ def delete_user_confirmed(request):
 
 
 def calendar(request):
-    print("calendar loaded")
+    #print("calendar loaded")
     if (is_logged_in(request)) == False:
         return login_error(request, "Please log in :)", request.COOKIES.get("username") ) 
     context = {}
@@ -223,6 +223,7 @@ def get_tasks_test(request):
     context = {}
     context = add_user_to_context(request, context)
     return render(request, 'plutocalendar/get_tasks.html', context=context)
+@csrf_exempt
 def create_task_handler(request):
     if request.method != "POST":
         #Expected HTTP POST
@@ -261,9 +262,10 @@ def create_task_handler(request):
     print(dateIn_array[0] + " " + dateIn_array[1] + " " + dateIn_array[2])
     event.date= date(int(dateIn_array[0]), int(dateIn_array[1]), int(dateIn_array[2]))
     event.user = CalendarUser.objects.filter(username__exact=request.COOKIES.get("username")).get()
+    print(CalendarUser.objects.filter(username__exact=request.COOKIES.get("username")).get())
     event.save()
     return JsonResponse({"success":"true"})
-
+@csrf_exempt
 def delete_task_handler(request):
     if request.method != "POST":
         #Expected HTTP POST
@@ -272,7 +274,7 @@ def delete_task_handler(request):
     if not is_logged_in(request):
         
         return JsonResponse({"success":"false"} )
-    data = request.POST
+    
     data = request.POST
     dateIn = data.get("date")
     print("date of task to delete = " + dateIn)
@@ -338,7 +340,7 @@ def get_tasks_date_range(request):
     for e in events_list:
         #print(e)
         current_date = e.date
-        print("Current date: "+str(current_date))
+        #print("Current date: "+str(current_date))
         if(current_date>=start_date and current_date <=end_date):
             event_return_list.append(
                 {
@@ -348,9 +350,9 @@ def get_tasks_date_range(request):
                     "eventTimeTo":e.end_time,
                 }
             )
-    print(len(event_return_list))
-    print(event_return_list)
-    print(JsonResponse(event_return_list, safe = False))
+    #print(len(event_return_list))
+    #print(event_return_list)
+    #print(JsonResponse(event_return_list, safe = False))
     return JsonResponse(event_return_list, safe = False)
 
 

@@ -14,7 +14,7 @@ let today = new Date();
 let activeDay;
 let month = today.getMonth();
 let year = today.getFullYear();
-
+let loadedDatesDictionary = {};
 const months = [
   "January",
   "February",
@@ -38,7 +38,7 @@ getEvents();
 function toYearMonthDayFormat(dateObject){
   //alert(dateObject.getFullYear() + "-" + (dateObject.getMonth()+1) + "-0"+dateObject.getDay());
   
-  if(dateObject.getDay() < 10) {
+  if(dateObject.getDate() < 10) {
     return dateObject.getFullYear() + "-" + (dateObject.getMonth()+1) + "-0"+dateObject.getDate();
   }
   return dateObject.getFullYear() + "-"+(dateObject.getMonth()+1)+"-"+dateObject.getDate();
@@ -53,6 +53,7 @@ function addEvent(eventObject) {
   let eventDay = eventDateArray[2];
   let eventMonth = eventDateArray[1];
   let eventYear = eventDateArray[0];
+
   const newEvent = {
     title: eventTitle,
     time : timeFrom + " - " + timeTo,
@@ -82,6 +83,7 @@ function addEvent(eventObject) {
     });
   }
   updateEvents(eventDay);
+  
 
   // also add event class to newly added day if not already 
   //TODO: Fix the weird bug where events on the current day appear when they shoulden't
@@ -103,34 +105,44 @@ function initCalendar() {
   const lastDate = lastDay.getDate();
   const day = firstDay.getDay();
   const nextDays = 7 - lastDay.getDay() - 1;
-  var url = "http://"+window.location.hostname+":"+location.port+"/plutocalendar/get_tasks_date_range";
-  //alert("Yo, the url u are trying to use for initCalendar is " + url);
-  let formData = new FormData();
-  formData.append('startDate', toYearMonthDayFormat(firstDay));
+  if(loadedDatesDictionary[firstDay] == null)
+  {
+    loadedDatesDictionary[firstDay] = true;
+    var url = "http://"+window.location.hostname+":"+location.port+"/plutocalendar/get_tasks_date_range";
+    //alert("Yo, the url u are trying to use for initCalendar is " + url);
+    let formData = new FormData();
+    formData.append('startDate', toYearMonthDayFormat(firstDay));
   
-  formData.append('endDate', toYearMonthDayFormat(lastDay));
-  responseDate = "";
-  //console.log(firstDay.);
-  //console.log(lastDay);
-  fetch(url,
-   {   method: 'POST',  
+    formData.append('endDate', toYearMonthDayFormat(lastDay));
+    responseDate = "";
+    //console.log(firstDay.);
+    //console.log(lastDay);
+    fetch(url,
+    {   method: 'POST',  
    
-      body: formData, 
-      }
-    )  
-     .then(function(res){return res.json();})
-     .then(function(data){
-      //alert(JSON.stringify(data));
-      dataProccessed = JSON.parse(JSON.stringify(data));
-      //alert("Data proccessed = " + dataProccessed);
-      //alert("First obj = " + dataProccessed[0]);
-      for(let i = 0; i < dataProccessed.length; i++) {
-        //alert("Event added");
-        //alert("Object is " + dataProccessed[i]);
-        addEvent( dataProccessed[i]);
-      }
-    })   
-     .catch(error => console.error('Error posting data:', error));
+       body: formData, 
+        }
+      )  
+      .then(function(res){return res.json();})
+      .then(function(data){
+        //alert(JSON.stringify(data));
+        dataProccessed = JSON.parse(JSON.stringify(data));
+        //alert("Data proccessed = " + dataProccessed);
+        //alert("First obj = " + dataProccessed[0]);
+        if(dataProccessed.success == "false") {
+          alert("Error retreving events from database");
+        
+        }
+        for(let i = 0; i < dataProccessed.length; i++) {
+          //alert("Event added");
+          //alert("Object is " + dataProccessed[i]);
+          addEvent( dataProccessed[i]);
+        } 
+        initCalendar();
+      })   
+      .catch(error => console.error('Error posting data:', error));
+  }
+  
   //Update date on the top of the callendar
   date.innerHTML = months[month] + " " + year;
 
@@ -143,7 +155,7 @@ function initCalendar() {
   }
 
   // cuurent month days
-
+ 
   for (let i = 1; i <= lastDate; i++) {
 
     // check if event present on current day
@@ -172,14 +184,18 @@ function initCalendar() {
       //if event foutn also add event class
       // add active on today at startup
       if (event) {
+        //console.log("day today active event  " + i);
         days += `<div class="day today active event">${i}</div>`;
       } else {
+        //console.log("day today active  " + i);
         days += `<div class="day today active">${i}</div>`;
       }
     } else {
       if (event) {
+        //console.log("day event  " + i);
         days += `<div class="day event">${i}</div>`;
       } else {
+        //console.log("day  " + i);
         days += `<div class="day ">${i}</div>`;
       }
     }
@@ -440,13 +456,20 @@ addEventSubmit.addEventListener("click", ()=> {
   const eventTitle = addEventTitle.value;
   const eventTimeFrom = addEventFrom.value;
   const eventTimeTo =  addEventTo.value;
-  var url = "http://"+window.location.hostname+":"+location.port+"/plutocalendar/get_tasks_date_range";
+  {
+  console.log(eventTimeFrom);
+  console.log(eventTimeTo);
+  console.log(toYearMonthDayFormat(new Date(year, month, activeDay)));
+  
+  var url = "http://"+window.location.hostname+":"+location.port+"/plutocalendar/create_task_handler";
   let formData = new FormData();
-  formData.append('startDate', toYearMonthDayFormat(firstDay));  
-  formData.append('endDate', toYearMonthDayFormat(lastDay));
-  responseDate = "";
-  //console.log(firstDay.);
-  //console.log(lastDay);
+  formData.append('date', toYearMonthDayFormat(new Date(year, month, activeDay)));  
+  formData.append('title', eventTitle);
+  formData.append('eventTimeFrom', eventTimeFrom);
+  formData.append('eventTimeTo', eventTimeTo);
+  
+  
+  
   fetch(url,
    {   method: 'POST',  
    
@@ -458,20 +481,22 @@ addEventSubmit.addEventListener("click", ()=> {
       //alert(JSON.stringify(data));
       dataProccessed = JSON.parse(JSON.stringify(data));
       //alert("Data proccessed = " + dataProccessed);
-      //alert("First obj = " + dataProccessed[0]);
-      for(let i = 0; i < dataProccessed.length; i++) {
-        //alert("Event added");
-        //alert("Object is " + dataProccessed[i]);
-        addEvent( dataProccessed[i]);
+      //alert(dataProccessed.success);
+      if(dataProccessed.success != "true") {
+        alert("Error POSTing event to database");
+        
       }
+      //alert("First obj = " + dataProccessed[0]);
+      
     })   
      .catch(error => console.error('Error posting data:', error));
+    
   // some validations
   if(eventTitle == "" || eventTimeFrom == "" || eventTimeTo == "") {
     alert("Please fill all the fields");
     return ;
   }
-
+  }
   const timeFromArr = eventTimeFrom.split(":");
   const timeToArr = eventTimeTo.split(":");
 
@@ -552,23 +577,40 @@ function converTime(time){
   time = timeHour + ":" + timeMin + " " + timeFormat;
   return time;
 }
-
+function reverseConverTime(time) {
+  let timeArr = time.split(":");
+  let timeHour = parseInt(timeArr[0]);
+  let timeMin = parseInt(timeArr[1].split(" ")[0]);
+  if(timeArr[1].split(" ")[1] == "PM") {
+    if(timeHour != 12) {
+    timeHour+= 12;
+    }
+  }
+  return timeHour + ":" + timeMin;
+}
 
 // function to remove events on click 
 
 eventsContainer.addEventListener("click", (e) => {
   if(e.target.classList.contains("event")) {
     const eventTitle = e.target.children[0].children[1].innerHTML;
-
+    let tempEventToRemove = null;
+    let dateOfEventToRemove = null;
     eventsArr.forEach((event) => {
       if (
-        event.day === activeDay &&
-        event.month === month + 1 &&
-        event.year === year
+        event.day == activeDay &&
+        event.month == month + 1 &&
+        event.year == year
       ) {
         event.events.forEach((item, index) => {
-          if (item.title === eventTitle) {
+          if (item.title == eventTitle) {
+            tempEventToRemove = item;
+            dateOfEventToRemove = new Date(year, month, event.day);
+            console.log(dateOfEventToRemove);
+            console.log("Time = " + tempEventToRemove.time);
+            console.log(eventTitle);
             event.events.splice(index, 1);
+            console.log("Gribbo");
           }
         });
 
@@ -576,7 +618,8 @@ eventsContainer.addEventListener("click", (e) => {
         if(event.events.length == 0) {
           eventsArr.splice(eventsArr.indexOf(event),1);
           //after remove complete day also remove active class of that day
-
+         
+          
           const activeDayElem = document.querySelector(".day.active");
           if(activeDayElem.classList.contains("event")) {
             activeDayElem.classList.remove("event")
@@ -586,6 +629,41 @@ eventsContainer.addEventListener("click", (e) => {
     });
     // after removing from array update events
     updateEvents(activeDay);
+    {
+      var url = "http://"+window.location.hostname+":"+location.port+"/plutocalendar/delete_task_handler";
+      let formData = new FormData();
+      formData.append('date', toYearMonthDayFormat(dateOfEventToRemove));  
+      formData.append('title', eventTitle);
+      console.log(tempEventToRemove.time);
+      let tempTimeArray = tempEventToRemove.time.split("-");
+
+      formData.append('eventTimeFrom', reverseConverTime(tempTimeArray[0]));
+      formData.append('eventTimeTo', reverseConverTime(tempTimeArray[1]));
+      console.log( reverseConverTime(tempTimeArray[0]));
+      console.log(  reverseConverTime(tempTimeArray[1]));
+  
+      fetch(url,
+      {   method: 'POST',  
+   
+        body: formData, 
+        }
+      )  
+     .then(function(res){return res.json();})
+     .then(function(data){
+      //alert(JSON.stringify(data));
+      dataProccessed = JSON.parse(JSON.stringify(data));
+      //alert("Data proccessed = " + dataProccessed);
+      //alert(dataProccessed.success);
+      if(dataProccessed.success != "true") {
+        alert("Error POSTing event to database");
+        
+      }
+      //alert("First obj = " + dataProccessed[0]);
+      
+    })   
+     .catch(error => console.error('Error posting data:', error));
+    
+    }
   }
 });
 
@@ -608,8 +686,8 @@ function getEvents() {
 //sorted using bubble sort
 function reorder() {
   
-  console.log(eventsArr[0].events)
-  console.log(startTime(eventsArr[0].events[0]))
+  console.log(eventsArr[0].events);
+  console.log(startTime(eventsArr[0].events[0]));
   
   var i, j;
   var len = eventsArr[0].events.length;
