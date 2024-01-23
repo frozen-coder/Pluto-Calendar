@@ -24,10 +24,10 @@
             <ul>
                 <li id = "Home"><a href="{% url 'index' %}">Home</a></li>
                 <li><a href="{% url 'calendar' %}">Calendar</a></li>
-                <li><a href="">Survey</a></li>
-                <li><a href="">Contact</a></li>
+                <!--<li><a href="">Survey</a></li>
+                <li><a href="">Contact</a></li> -->
                 {% if username %}
-                <li><a href="{% url 'create_task_test'%}">Create Task(test)</a></li>
+                
                 <li><a href = "{% url 'logout' %}" id = "LogOut">LogOut</a></li>
                 {% else %}
                 <li><a href = "{% url 'login' %}" id = "LogIn">LogIn</a></li>
